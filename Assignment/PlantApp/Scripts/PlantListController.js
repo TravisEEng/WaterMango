@@ -25,6 +25,9 @@
             if (((today.getTime() - lastWateredDate.getTime()) / (1000 * 60 * 60) > 6)){
                 $scope.showNotification = true;
                 $scope.plantsThatNeedWater.push(name);
+                if (($('#plantStatus' + id)[0].value) == 1) {
+                    $scope.SetThirstyPlantDBCall(id);
+                }
             }
         }
 
@@ -59,6 +62,15 @@
             $scope.checkLastWateredDate();
         });
 
+        $scope.SetThirstyPlantDBCall = function (id) {
+            $http({
+                method: 'PUT',
+                url: '/api/Plants/' + id + '/thirsty'
+            }).then(function (data) {
+                $scope.plants = data.data;
+            });
+        }
+
 
         $scope.beginWateringDBCall = function (id) {
 
@@ -72,7 +84,6 @@
         }
 
         $scope.RevertWaterDBCall = function (id) {
-            console.log("reverted");
             $http({
                 method: 'PUT',
                 url: '/api/Plants/' + id + '/revert'
@@ -96,10 +107,8 @@
             ($('#plantPValue' + id)[0].value) = parseInt($('#plantPValue' + id)[0].value) + value;
             var progressBarVal = ($('#plantPValue' + id)[0].value);
             // $scope.progress_value += value;
-            console.log('up by 10 - 1 second');
             $('#progressBar' + id).attr('aria-valuenow', progressBarVal).css('width', progressBarVal + '%');
 
-            console.log($('#plantPValue' + id));
         }
 
         $scope.beginWatering = function (id) {
@@ -107,7 +116,6 @@
             var today = new Date();
             if (((today.getTime() - lastWateredDate.getTime()) / 1000) < THIRTY_SECONDS) {
                 console.log('hasnt been 30 seconds yet');
-                console.log(((today.getTime() - lastWateredDate.getTime()) / 1000));
             }
             else {
                 $scope.beginWateringDBCall(id);

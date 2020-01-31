@@ -34,19 +34,20 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="plant in plants">
+                        <input type="hidden" value="{{plant.Watered_Status}}" id="plantStatus{{plant.Id}}" />
                         <input type="hidden" value="{{plant.Last_Watered}}" id="plantDate{{plant.Id}}" />
                         <input type="hidden" id="plantPValue{{plant.Id}}" value="{{progress_value}}" />
                         <td style="text-align: center;">{{plant.Description}}</td>
                         <td style="text-align: center;">{{(plant.Last_Watered | date : "medium")}}</td>
                         <td style="text-align: center;">
-                            {{plant.Watered_Status}}
+                            {{plant.Watered_Status == 2 ? 'Watering plant' : plant.Watered_Status == 1 ? 'Freshly watered' : 'Thirsty plant'}}
 
                         </td>
 
                         <td style="text-align: center;">
-                            <button  ng-click=" plant.Watered_Status != 2 ? beginWatering(plant.Id) : cancelWatering(plant.Id)" type="button" class="btn {{plant.Watered_Status == 0 ? 'btn-danger' : plant.Watered_Status == 1 ? ' btn-success': 'btn-primary'}}">{{plant.Watered_Status == 0 ? 'Water me please' : plant.Watered_Status == 2 ? 'Being watered' : 'Water' }}</button>
+                            <button ng-click=" plant.Watered_Status != 2 ? beginWatering(plant.Id) : cancelWatering(plant.Id)" type="button" class="btn {{plant.Watered_Status == 0 ? 'btn-danger' : plant.Watered_Status == 1 ? ' btn-success': 'btn-primary'}}">{{plant.Watered_Status == 0 ? 'Water me please' : plant.Watered_Status == 2 ? 'Being watered' : 'Water' }}</button>
                             <div style="margin-bottom: 5px;" class="progress">
-                                <div  class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar{{plant.Id}}" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{progress_value}}%"></div>
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar{{plant.Id}}" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{progress_value}}%"></div>
                             </div>
                         </td>
 

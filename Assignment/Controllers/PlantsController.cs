@@ -35,42 +35,6 @@ namespace Assignment.Controllers
             return Ok(plant);
         }
 
-        //// PUT: api/Plants/5
-        //[ResponseType(typeof(void))]
-        //public IHttpActionResult PutPlant(int id, Plant plant)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    if (id != plant.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    db.Entry(plant).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        db.SaveChanges();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!PlantExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return StatusCode(HttpStatusCode.NoContent);
-        //}
-
-
 
         [ResponseType(typeof(void))]
         [AcceptVerbs("PUT")]
@@ -128,7 +92,6 @@ namespace Assignment.Controllers
         [AcceptVerbs("PUT")]
         public IQueryable<Plant> BeginWaterPlant(int id, Plant plant)
         {
-            DbSet<Plant> pl = (DbSet<Plant>)GetPlants();
 
             plant = db.Plants.Find(id);
             // plant = pl.Find(x => x.Id == id);
@@ -182,7 +145,6 @@ namespace Assignment.Controllers
 
         public IQueryable<Plant> RevertWaterDBCall(int id, Plant plant)
         {
-            DbSet<Plant> pl = (DbSet<Plant>)GetPlants();
 
             plant = db.Plants.Find(id);
             // plant = pl.Find(x => x.Id == id);
@@ -229,6 +191,54 @@ namespace Assignment.Controllers
         }
 
 
+        // PUT: api/Plants/5
+        [ResponseType(typeof(void))]
+        [AcceptVerbs("PUT")]
+        [Route("api/Plants/{id}/thirsty")]
+
+        public IQueryable<Plant> ThirstyWaterDBCall(int id, Plant plant)
+        {
+
+            plant = db.Plants.Find(id);
+
+
+            if (!ModelState.IsValid)
+            {
+                return GetPlants();
+
+            }
+
+            if (id != plant.Id)
+            {
+                return GetPlants();
+
+            }
+
+            db.Entry(plant).State = EntityState.Modified;
+
+            plant.Watered_Status = 0; //plant is now being watered
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PlantExists(id))
+                {
+                    return GetPlants();
+
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return GetPlants();
+        }
+
+
         // POST: api/Plants
         [ResponseType(typeof(Plant))]
         public IHttpActionResult PostPlant(Plant plant)
@@ -244,21 +254,6 @@ namespace Assignment.Controllers
             return CreatedAtRoute("DefaultApi", new { id = plant.Id }, plant);
         }
 
-        // DELETE: api/Plants/5
-        [ResponseType(typeof(Plant))]
-        public IHttpActionResult DeletePlant(int id)
-        {
-            Plant plant = db.Plants.Find(id);
-            if (plant == null)
-            {
-                return NotFound();
-            }
-
-            db.Plants.Remove(plant);
-            db.SaveChanges();
-
-            return Ok(plant);
-        }
 
         protected override void Dispose(bool disposing)
         {
